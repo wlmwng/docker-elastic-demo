@@ -1,0 +1,10 @@
+FROM jupyter/minimal-notebook:2021-10-17
+
+RUN pip install --upgrade pip
+
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices
+COPY requirements.txt /tmp/
+RUN pip install --requirement /tmp/requirements.txt
+
+#set the working directory
+WORKDIR /home/jovyan/work

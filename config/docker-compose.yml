@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: dockerfile-jupyter
+    image: ${MY_USERNAME}/${COMPOSE_PROJECT_NAME}:jupyter-minimal-2021-10-17
+    restart: unless-stopped
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN}
+    ports:
+      - "127.0.0.1:8001:8888"
+    mem_limit: 2g
+    volumes:
+      - type: bind
+        source: ..
+        target: /home/jovyan/work/docker-elastic-demo
+    networks:
+      - esnet
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: dockerfile-elasticsearch
+    image: ${MY_USERNAME}/${COMPOSE_PROJECT_NAME}:elasticsearch-7.11.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8002:9200"
+    expose:
+      - "9200"
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=true
+      - xpack.security.audit.enabled=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - type: volume
+        source: esdata
+        target: /usr/share/elasticsearch/data
+    networks:
+      - esnet
+
+  kibana:
+    build:
+      context: .
+      dockerfile: dockerfile-kibana
+    image: ${MY_USERNAME}/${COMPOSE_PROJECT_NAME}:kibana-enhanced-7.11.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8003:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS="http://elasticsearch:9200"
+      - ELASTICSEARCH_USERNAME=${ELASTIC_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+    mem_limit: 2g
+    networks:
+      - esnet
+    depends_on:
+      - elasticsearch
+      
+networks:
+  esnet:
+    name: "${COMPOSE_PROJECT_NAME}_esnet"
+
+volumes:
+  esdata:
+    name: "${COMPOSE_PROJECT_NAME}_esdata"
+    driver: local
