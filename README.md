@@ -44,8 +44,9 @@ Navigate to the `config` directory and add a `.env` file with the following line
 MY_USERNAME=myusername
 COMPOSE_PROJECT_NAME=demo
 JUPYTER_TOKEN=changeme
-ELASTIC_USERNAME=elastic          
+ELASTIC_USERNAME=elastic
 ELASTIC_PASSWORD=changemetoo
+
 ```
 - `MY_USERNAME`: used to label your images
 - `COMPOSE_PROJECT_NAME`: prefix for each container's name
