@@ -19,7 +19,7 @@ This is a guide for starting up a multi-container [Docker](https://www.docker.co
 
   <img src="https://www.docker.com/sites/default/files/d8/2018-11/docker-containerized-appliction-blue-border_2.png" alt="Containerized Applications" width="400"/>
 
-  ([image](docker-containerized-appliction-blue-border_2.png))
+  ([image](https://www.docker.com/sites/default/files/d8/2018-11/docker-containerized-appliction-blue-border_2.png))
 
 # Quick Start
 ### 1. Install [Docker Engine for Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
@@ -404,7 +404,7 @@ To stop port forwarding:
 
 1. find the related process IDs
 ```
-ps aux | grep -e 127.0.0.1:8001 -e 127.0.0.1:8001 -e 127.0.0.1:8001
+ps aux | grep -e 127.0.0.1:8001 -e 127.0.0.1:8002 -e 127.0.0.1:8003
 ```
 2. and terminate them.
 
