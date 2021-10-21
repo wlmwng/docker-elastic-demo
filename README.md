@@ -400,6 +400,11 @@ ssh -f -N -L 127.0.0.1:9200:127.0.0.1:8002 <server domain name>
 # Kibana container
 ssh -f -N -L 127.0.0.1:5601:127.0.0.1:8003  <server domain name>
 ```
+You should then be able to reach:
+- the Jupyterlab container at [localhost:8888](http://localhost:8888),
+- the Elasticsearch container at [localhost:9200](http://localhost:9200), and
+- the Kibana container at [localhost:5601](http://localhost:5601).
+
 To stop port forwarding:
 
 1. find the related process IDs
