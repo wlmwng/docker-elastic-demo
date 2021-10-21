@@ -5,10 +5,13 @@ This is a guide for starting up a multi-container [Docker](https://www.docker.co
 ## Overview
 - The **Quick Start** sets up:
   - a Jupyter container for data collection and analysis,
-  - an Elasticsearch container for storing the data, and
-  - a Kibana container for visually monitoring the data collection process.
+  - an Elasticsearch container for managing storage of the data, and
+  - a Kibana container for visually examining the Elasticsearch indices.
 - The **Service Configurations** section explains the settings used to set up the containers.
-- The **Tips** section has commands for using bash inside the containers and for configuring ports.
+- The **Tips** section has commands for:
+  - using bash inside the containers,
+  - configuring ports, and
+  - backing up and restoring a data volume.
 
 ## What is a container?
 
@@ -416,3 +419,64 @@ ps aux | grep -e 127.0.0.1:8001 -e 127.0.0.1:8002 -e 127.0.0.1:8003
 ```
 kill <PID>
 ```
+
+## Backup and restore a data volume
+This section is based on the examples provided in "Backup, restore, or migrate data volumes" ([docs](https://docs.docker.com/storage/volumes/#backup-restore-or-migrate-data-volumes)).
+### Create a backup
+
+1. Make a directory on your local machine to store your backup <br>
+The backup process will output a gzip-compressed tar archive into this directory. In the instructions below, the path is assumed to be `home/myusername/volumes_backup`.
+
+2. Stop the Elasticsearch container if it's running <br>
+This helps avoid data corruption by making sure that Elasticsearch is not actively in-use during the backup process. Note that you are only stopping the container and not removing it so it is still accessible to `docker run` in the next step.
+```
+docker stop elasticsearch-myusername
+```
+
+3. Create the backup <br>
+This Docker command creates a temporary container which is used as a helper for the backup process.
+```
+docker run --rm --volumes-from elasticsearch-myusername -v /home/myusername/volumes_backup:/backup ubuntu tar cvzf /backup/esdata-myusername-yyyymmdd.tar.gz /usr/share/elasticsearch/data
+```
+- `docker run`: start up a container
+  - `--rm`: automatically remove the container when it exits (i.e., it is a temporary container)
+  - `--volumes-from`: mount all volumes from the Elasticsearch container into the temporary container. This essentially mounts `esdata-myusername` (i.e., the volume you are backing up) to the temporary container's `/usr/share/elasticsearch/data` directory.
+  - `-v`: bind mount the host's `/home/myusername/volumes_backup` directory into the temporary container's `/backup` directory. The `tar` command will output a `tar.gz` file into `/backup`. Since you used a bind mount, this file will be available on the host after the temporary container has been thrown away.
+  - `ubuntu`: the temporary container is created using an Ubuntu Docker image
+  - `tar cvzf <the-output-file> <the-content-to-backup>`
+    - This command runs inside the temporary container
+    - It creates a gzip-compressed tar archive of the temporary container's `/usr/share/elasticsearch/data` directory and outputs a file called `esdata-myusername-yyyymmdd.tar.gz` into the container's `/backup` directory
+
+4. Check that the `tar.gz` file exists in the `volumes_backup` directory
+
+### Restore from backup
+
+1. Remove the containers and the existing volume
+```
+docker-compose down
+docker volume rm esdata-myusername
+```
+
+2. Bring up a new set of containers along with a new volume
+```
+docker-compose up -d
+```
+
+3. Stop the Elasticsearch container
+```
+docker stop elasticsearch-myusername
+```
+
+4. Restore the Elasticsearch data from the backup <br>
+This Docker command is similar to one used to create the `tar.gz` backup file. The difference is what happens inside the container. In this case, you use a bash shell inside the container (`bash -c "cd / && tar xvzf /backup/esdata-myusername-yyyymmdd.tar.gz"`). This bash command decompresses and untars the backup file into the root directory of the container. The root directory is used because the extracted backup retains the directory structure of `/usr/share/elasticsearch/data`.
+```
+docker run --rm --volumes-from elasticsearch-myusername -v /home/myusername/volumes_backup:/backup ubuntu bash -c "cd / && tar xvzf /backup/esdata-myusername-yyyymmdd.tar.gz"
+```
+
+5. Start the Elasticsearch container
+```
+docker start elasticsearch-myusername
+```
+
+6. Check if the data appear as expected in Elasticsearch and Kibana
+
