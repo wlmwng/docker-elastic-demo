@@ -1,6 +1,6 @@
 # Introduction
 
-This is a guide for starting up a multi-container [Docker](https://www.docker.com/resources/what-container) environment with [JupyterLab](https://jupyter.org/), [Elasticsearch](https://www.elastic.co/what-is/elasticsearch), and [Kibana](https://www.elastic.co/what-is/kibana) on a host machine running Ubuntu.
+This guide starts up a multi-container [Docker](https://www.docker.com/resources/what-container) application with [JupyterLab](https://jupyter.org/), [Elasticsearch](https://www.elastic.co/what-is/elasticsearch), and [Kibana](https://www.elastic.co/what-is/kibana) on an Ubuntu host machine. If you are new to Elasticsearch and Kibana, check out the [Beginner's Crash Course to Elastic Stack](https://www.youtube.com/playlist?list=PL_mJOmq4zsHZYAyK606y7wjQtC0aoE6Es) on YouTube!
 
 ## Overview
 - The **Quick Start** sets up:
@@ -13,7 +13,7 @@ This is a guide for starting up a multi-container [Docker](https://www.docker.co
   - configuring ports, and
   - backing up and restoring a data volume.
 
-## What is a container?
+## What is a Docker container?
 
 - "What is a Docker container and how is it different than a VM?" ([docs](https://www.docker.com/blog/the-10-most-common-questions-it-admins-ask-about-docker/))
   >Containerization leverages the kernel within the host operating system to run multiple root file systems. We call these root file systems “containers.” Each container shares the kernel within the host OS, allowing you to run multiple Docker containers on the same host. Unlike VMs, containers do not have an OS within it. They simply share the underlying kernel with the other containers. Each container running on a host is completely isolated so applications running on the same host are unaware of each other (you can use Docker Networking to create a multi-host overlay network that enables containers running on hosts to speak to one another). <br>
@@ -55,6 +55,7 @@ ELASTIC_PASSWORD=changemetoo
 - `COMPOSE_PROJECT_NAME`: prefix for each container's name
 - `JUPYTER_TOKEN`: token for logging into the Jupyter container
 - `ELASTIC_USERNAME`: "elastic" is the [built-in superuser](https://www.elastic.co/guide/en/elasticsearch/reference/7.11/built-in-users.html)
+
 ### 4. Bring up the containers
 
 `docker-compose.yml` is the configuration file for bringing up the containers. While you are in the `config` directory, run the command below. The environment variables in `.env` will feed into the Docker Compose process.
@@ -74,7 +75,6 @@ Creating demo_kibana_1        ... done
 ```
 
 You can see your active containers by entering `docker ps` in your terminal:
-
 
 ```
 CONTAINER ID   IMAGE                                        COMMAND                  CREATED         STATUS         PORTS                                NAMES
@@ -96,7 +96,7 @@ The demo is a Python-based Jupyter notebook which contains:
 - an example showing how a document persists even if the containers are thrown away
 - a very basic intro to Kibana
 
-### 6. Close down the multi-container environment
+### 6. Close down the multi-container application
 When you're done, run:
 ```
 docker-compose down
@@ -150,11 +150,11 @@ To remove all images without at least one container associated to them:
 docker image prune -a
 ```
 
-<br>
-
 # Service Configurations
 
-This section explains the settings for each service in `docker-compose.yml`.
+Here's a high-level overview of the Docker application which is spun up when you use `docker-compose up -d`. The application is made up of three containers which are connected through an internal network called `esnet`, and its data persist in a volume called `esdata` which is housed on the host machine.
+
+![image](docker-elastic-demo.svg)
 
 ## Jupyter
 
@@ -355,6 +355,7 @@ volumes:
 # Tips
 
 - [Docker CLI Cheat-Sheet](https://github.com/xcad2k/cheat-sheets/blob/main/devops/dockercli-cheat-sheet.md)
+
 ## Use the bash shell inside a container
 It can be useful to login as root if you need to run apt-get commands or to change file permissions.
 
