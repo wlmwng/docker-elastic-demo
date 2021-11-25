@@ -10,8 +10,9 @@ This guide starts up a multi-container [Docker](https://www.docker.com/resources
 - The **Service Configurations** section explains the settings used to set up the containers.
 - The **Tips** section has commands for:
   - using bash inside the containers,
-  - configuring ports, and
-  - backing up and restoring a data volume.
+  - configuring ports,
+  - backing up and restoring a data volume, and 
+  - developing inside the containers with Visual Studio Code.
 
 ## What is a Docker container?
 
@@ -481,3 +482,13 @@ docker start elasticsearch-myusername
 
 6. Check if the data appear as expected in Elasticsearch and Kibana
 
+
+## Developing inside containers using Visual Studio Code
+Install:
+- [Visual Studio Code](https://code.visualstudio.com/download)
+- Visual Studio Code Remote - Containers extension (["Developing inside a Container"](https://code.visualstudio.com/docs/remote/containers))
+>The Visual Studio Code Remote - Containers extension lets you use a Docker container as a full-featured development environment. It allows you to open any folder inside (or mounted into) a container and take advantage of Visual Studio Code's full feature set... This lets VS Code provide a local-quality development experience — including full IntelliSense (completions), code navigation, and debugging — regardless of where your tools (or code) are located.
+
+If your containers are on a remote server, you can connect to the server through SSH:
+- Visual Studio Code Remote - SSH extension (["Remote Development using SSH"](https://code.visualstudio.com/docs/remote/ssh))
+>The Visual Studio Code Remote - SSH extension allows you to open a remote folder on any remote machine, virtual machine, or container with a running SSH server and take full advantage of VS Code's feature set. Once connected to a server, you can interact with files and folders anywhere on the remote filesystem. No source code needs to be on your local machine to gain these benefits since the extension runs commands and other extensions directly on the remote machine. This lets VS Code provide a local-quality development experience — including full IntelliSense (completions), code navigation, and debugging — regardless of where your code is hosted.
