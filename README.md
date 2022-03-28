@@ -19,11 +19,7 @@ This guide starts up a multi-container [Docker](https://www.docker.com/resources
 - "What is a Docker container and how is it different than a VM?" ([docs](https://www.docker.com/blog/the-10-most-common-questions-it-admins-ask-about-docker/))
   >Containerization leverages the kernel within the host operating system to run multiple root file systems. We call these root file systems “containers.” Each container shares the kernel within the host OS, allowing you to run multiple Docker containers on the same host. Unlike VMs, containers do not have an OS within it. They simply share the underlying kernel with the other containers. Each container running on a host is completely isolated so applications running on the same host are unaware of each other (you can use Docker Networking to create a multi-host overlay network that enables containers running on hosts to speak to one another). <br>
 - `docker run` ([docs](https://docs.docker.com/engine/reference/run/))
-  > When an operator executes `docker run`, the container process that runs is isolated in that it has its own file system, its own networking, and its own isolated process tree separate from the host.  
-
-  <img src="https://www.docker.com/sites/default/files/d8/2018-11/docker-containerized-appliction-blue-border_2.png" alt="Containerized Applications" width="400"/>
-
-  ([image](https://www.docker.com/sites/default/files/d8/2018-11/docker-containerized-appliction-blue-border_2.png))
+  > When an operator executes `docker run`, the container process that runs is isolated in that it has its own file system, its own networking, and its own isolated process tree separate from the host.
 
 # Quick Start
 ### 1. Install [Docker Engine for Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
